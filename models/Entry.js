@@ -6,6 +6,6 @@ const entrySchema = new mongoose.Schema({
   imageUrl: { type: String },
   imagePublicId: { type: String },
   date: { type: String, required: true },
-});
+},{ timestamps: true });
 
 export default mongoose.model("Entry", entrySchema);
