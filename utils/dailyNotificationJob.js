@@ -410,7 +410,7 @@ export const startDailyJob = () => {
 
   // Runs every day at the configured cron time (server timezone by default)
   // NOTE: Update this cron expression or add timezone option if you need a specific tz.
-  cron.schedule("31 11 * * *", async () => {
+  cron.schedule("35 12 * * *", async () => {
     try {
       await runDailyJobOnce();
     } catch (err) {
