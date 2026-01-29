@@ -1,8 +1,11 @@
 import Summary from "../models/Summary.js";
 import Entry from "../models/Entry.js";
-import OpenAI from "openai";
+// import OpenAI from "openai";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 /* ---------------------------------------
    Helpers
@@ -90,14 +93,12 @@ Output ONLY the summary text.
 `;
     /* ================================================= */
 
-    const response = await openai.responses.create({
-      model: "gpt-4o-mini",
-      input: prompt,
-    });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    const summaryText =
-      response?.output?.[0]?.content?.[0]?.text?.trim() ||
-      response.output_text?.trim();
+const result = await model.generateContent(prompt);
+
+const summaryText = result?.response?.text()?.trim();
+
 
     if (!summaryText) {
       return res.status(500).json({ error: "Failed to generate summary" });
@@ -108,7 +109,7 @@ Output ONLY the summary text.
       month,
       summary: summaryText,
       entriesCountAtLastGenerate: entryCount,
-      generatedAt: new Date(),
+      generatedAt: new Date(), 
     });
 
     return res.json({
@@ -123,7 +124,7 @@ Output ONLY the summary text.
     res.status(500).json({ error: "Failed to generate summary" });
   }
 };
-
+ 
 /* ---------------------------------------
    GET /api/summary/:month
 ----------------------------------------*/

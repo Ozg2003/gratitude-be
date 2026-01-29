@@ -11,12 +11,28 @@ const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 /* ---------------------------------------
    REGISTER USER
 ------------------------------------------*/
+const usernameRegex = /^[A-Za-z][A-Za-z0-9]{2,14}$/;
+
 export const registerUser = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    if (!username || !password)
+    if (!username || !password) {
       return res.status(400).json({ error: "Username & password required" });
+    }
+
+    if (!usernameRegex.test(username)) {
+      return res.status(400).json({
+        error:
+          "Username must start with a letter and be 3–15 characters long",
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        error: "Password must be at least 6 characters",
+      });
+    }
 
     const existing = await User.findOne({ username });
     if (existing)
@@ -48,6 +64,7 @@ export const registerUser = async (req, res) => {
     res.status(500).json({ error: "Registration failed" });
   }
 };
+
 
 /* ---------------------------------------
    LOGIN USER
