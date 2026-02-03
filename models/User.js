@@ -10,10 +10,28 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-    password: {     
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
+
+    password: {
       type: String,
       required: true,
     },
+
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    emailOtp: String,
+    emailOtpExpire: Date,
+    otpLastSentAt: Date,
 
     fcmToken: {
       type: String,
